@@ -7,9 +7,16 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const validationSchema = Yup.object({
-    username: Yup.string()
-      .min(3, "Username must be at least 3 characters")
-      .required("Username is required"),
+    email: Yup.string()
+      .trim()
+      .lowercase()
+      .required("Email is required")
+      .email("Invalid Email format")
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        "Please enter a valid Email Address"
+      )
+      .max(320, "Email must be less than 320 characters"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
@@ -23,13 +30,13 @@ function LoginForm() {
 
   const formik = useFormik({
     initialValues: {
-      username: "",
+      email: "",
       password: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log("Form submitted with values:", values);
-      alert(`Logged in as: ${values.username}`);
+      alert(`Logged in as: ${values.email}`);
     },
   });
 
@@ -46,17 +53,17 @@ function LoginForm() {
 
         <div>
           <input
-            type="text"
-            placeholder="Username"
+            type="email"
+            placeholder="Email"
             className="w-full p-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400"
-            name="username"
-            value={formik.values.username}
+            name="email"
+            value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.username && formik.errors.username ? (
+          {formik.touched.email && formik.errors.email ? (
             <div className="text-red-500 text-sm mt-1">
-              {formik.errors.username}
+              {formik.errors.email}
             </div>
           ) : null}
         </div>
